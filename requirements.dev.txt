@@ -1,0 +1,7 @@
+# these requirements are only required for development inside vscode
+pre-commit      # hooks for applying linters on commit
+
+# auxiliary requirements
+read-version
+wheel
+setuptools
