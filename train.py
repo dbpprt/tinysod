@@ -1,75 +1,58 @@
-import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
+import argparse
 
 
-class Model(nn.Module):
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-
-        # self.linear = nn.Linear(1, 1)
-
-        # this should be randomly initialized
-        self.w = nn.Parameter(torch.tensor(4.5))
-        self.b = nn.Parameter(torch.tensor(1.0))
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.w * x + self.b
+def train(args: argparse.Namespace, config: dict) -> None:
+    print(args)
+    print(config)
 
 
 def main() -> None:
-    w_hat: float = 3.0
-    b_hat: float = 2.0
+    parser = argparse.ArgumentParser(description="Simple example of training script.")
+    parser.add_argument("--data_dir", required=True, help="The data folder on disk.")
+    parser.add_argument("--fp16", action="store_true", help="If passed, will use FP16 training.")
+    parser.add_argument(
+        "--mixed_precision",
+        type=str,
+        default=None,
+        choices=["no", "fp16", "bf16", "fp8"],
+        help="Whether to use mixed precision. Choose"
+        "between fp16 and bf16 (bfloat16). Bf16 requires PyTorch >= 1.10."
+        "and an Nvidia Ampere GPU.",
+    )
+    parser.add_argument("--cpu", action="store_true", help="If passed, will train on the CPU.")
+    parser.add_argument(
+        "--checkpointing_steps",
+        type=str,
+        default=None,
+        help="Whether the various states should be saved at the end of every n steps, or 'epoch' for each epoch.",
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        default=".",
+        help="Optional save directory where all checkpoint folders will be stored. Default is the current working directory.",
+    )
+    parser.add_argument(
+        "--resume_from_checkpoint",
+        type=str,
+        default=None,
+        help="If the training should continue from a checkpoint folder.",
+    )
+    parser.add_argument(
+        "--with_tracking",
+        action="store_true",
+        help="Whether to load in all available experiment trackers from the environment and use them for logging.",
+    )
+    parser.add_argument(
+        "--project_dir",
+        type=str,
+        default="logs",
+        help="Location on where to store experiment tracking logs` and relevant project information",
+    )
+    args: argparse.Namespace = parser.parse_args()
+    config: dict = {"lr": 3e-2, "num_epochs": 3, "seed": 42, "batch_size": 64, "image_size": 224}
 
-    num_samples: int = 500
-    num_epochs: int = 100
-
-    x: torch.Tensor = torch.linspace(-2, 2, num_samples)
-
-    def f(x: torch.Tensor) -> torch.Tensor:
-        return w_hat * x + b_hat
-
-    noise = torch.randn(num_samples)
-
-    # some synthesized data augmented with gaussian noise
-    y = f(x) + noise
-
-    model: Model = Model()
-
-    def loss_fn(y_hat: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
-        return torch.mean((y_hat - y) ** 2)
-
-    with torch.no_grad():
-        plt.plot(x, y, ".", label="Data")
-        plt.plot(x, f(x), label="Ground truth")
-        plt.plot(x, model(x), label="Predictions")
-        plt.legend()
-
-        print("Current loss: %1.6f" % loss_fn(y, model(x)).numpy())
-
-    def training_loop(model: nn.Module, x: torch.Tensor, y: torch.Tensor, num_epochs: int) -> None:
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-
-        for epoch in range(num_epochs):
-            optimizer.zero_grad()
-
-            y_hat = model(x)
-            loss = loss_fn(y_hat, y)
-
-            loss.backward()
-            optimizer.step()
-
-            print("Epoch %d, loss %1.6f" % (epoch, loss.item()))
-
-    # usually the dataset is split into batches but in our case we can treat the entire dataset
-    # as a single batch.
-    training_loop(model, x, y, num_epochs)
-
-    with torch.no_grad():
-        plt.plot(x, model(x), label="Trained model predictions")
-        plt.legend()
-
-        print("Current loss: %1.6f" % loss_fn(y, model(x)).numpy())
+    train(args, config)
 
 
 if __name__ == "__main__":

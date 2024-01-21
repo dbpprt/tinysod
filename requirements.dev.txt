@@ -1,7 +1,8 @@
+mypy
 # these requirements are only required for development inside vscode
-pre-commit      # hooks for applying linters on commit
+pre-commit
 
 # auxiliary requirements
 read-version
-wheel
 setuptools
+wheel

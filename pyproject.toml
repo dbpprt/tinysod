@@ -15,3 +15,29 @@ line-length = 119
 [tool.ruff.isort]
 lines-after-imports = 2
 known-first-party = ["accelerate"]
+
+[tool.mypy]
+python_version = "3.11"
+
+check_untyped_defs = true
+disallow_untyped_defs = true
+incremental = false
+ignore_errors = false
+pretty = true
+show_error_context = true
+show_traceback = true
+strict_optional = true
+warn_incomplete_stub = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+exclude = ["scripts", "docs", "test", "src/modeling"]
+
+# temporary fix
+#[[tool.mypy.overrides]]
+#module = "src.modeling.*"
+#ignore_errors = true

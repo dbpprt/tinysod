@@ -11,10 +11,16 @@
         },
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
+    // "notebook.formatOnSave.enabled": true,
+    // "notebook.codeActionsOnSave": {
+    //     "source.fixAll": true,
+    //     "source.organizeImports": false
+    // },
+    "notebook.formatOnCellExecution": true,
     "notebook.formatOnSave.enabled": true,
     "notebook.codeActionsOnSave": {
-        "source.fixAll": true,
-        "source.organizeImports": true
+        "notebook.source.fixAll": "explicit",
+        "notebook.source.organizeImports": "explicit"
     },
     // editor settings
     "editor.detectIndentation": false,
