@@ -2,6 +2,9 @@
 
 # transformers==4.36.1
 accelerate[sagemaker]==0.25.0
+
+omegaconf
+rich
 torch==2.1.2
 torchvision
 # datasets

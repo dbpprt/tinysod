@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "accelerate main.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "module": "accelerate.commands.launch",
+            "args": [
+                "--config_file=./config/accelerate/local.yaml",
+                "launch.py",
+                "--debug",
+                "--seed",
+                "42",
+                "training",
+                "--data_config",
+                "./data/config.yaml",
+                "--image_size",
+                "128"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                // "PYTHONPATH": "../../"
+            }
+        }
+    ]
+}
